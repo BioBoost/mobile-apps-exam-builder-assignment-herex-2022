@@ -65,6 +65,26 @@ const Courses = {
   all: () => {
     return structuredClone(db.data.courses);     // Deep clone
   },
+
+  update: (course) => {
+    const indexOriginal = db.data.courses.findIndex((c) => c.id === course.id );
+    if (indexOriginal < 0) throw new ResourceError("Course not found with that id", 404);
+    if ((db.data.courses.find(c => (c.id !== course.id && c.title === course.title)) !== undefined)) throw new ResourceError("Course title already used", 409)
+
+    const replacement = Object.assign({}, db.data.courses[indexOriginal], course);
+    const original = db.data.courses[indexOriginal];      // For undo
+
+    db.data.courses[indexOriginal] = replacement;
+
+    return new Promise((resolve, reject) => {
+      db.write()
+        .then(() => resolve(replacement))
+        .catch(() => {
+          db.data.courses[indexOriginal] = original;    // Undo update course
+          reject("Failed to write db to disk")
+        })
+    });
+  },
 }
 
 const Questions = {
@@ -132,13 +152,33 @@ const Questions = {
     });
   },
 
-  get_random(amount = 1) {
+  get_random: (amount = 1) => {
     // We could filter here first (for example on tags)
     
     let questions = Questions.all();
     shuffle(questions);
     return questions.slice(0, amount).map(q => Questions.find_by_id(q.id));
-  }
+  },
+
+  update: (question) => {
+    const indexOriginal = db.data.questions.findIndex((q) => q.id === question.id );
+    if (indexOriginal < 0) throw new ResourceError("Question not found with that id", 404);
+
+    const replacement = Object.assign({}, db.data.questions[indexOriginal], question);
+    const course = Courses.find_by_id(replacement.course_id);     // Throws if not found
+    const original = db.data.questions[indexOriginal];      // For undo
+
+    db.data.questions[indexOriginal] = replacement;
+
+    return new Promise((resolve, reject) => {
+      db.write()
+        .then(() => resolve(replacement))
+        .catch(() => {
+          db.data.questions[indexOriginal] = original;    // Undo update question
+          reject("Failed to write db to disk")
+        })
+    });
+  },
 }
 
 export { connect, Courses, Questions }

@@ -47,9 +47,7 @@ router.post(
       });
     }
 
-    Courses.create({
-      title: req.body.title
-    })
+    Courses.create(req.body)
     .then((result) => {
       res.send(result);
     })
@@ -60,6 +58,30 @@ router.post(
     })
   }
 );
+
+router.patch(
+  '/courses',
+  (req, res) => {
+    console.log(req.body)
+    const validation = validate(req.body, CourseSchema.update.body);
+    if (!validation.valid) {
+      return res.status(400).send({
+        message: 'Invalid course information',
+        errors: validation.errors.map(e => e.stack)
+      });
+    }
+
+    Courses.update(req.body)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((reason) => {
+      res.status(500).send({
+        "message": reason
+      })
+    })
+  }
+)
 
 ////////////////////////
 //     Questions      //
@@ -91,13 +113,7 @@ router.post(
       });
     }
 
-    Questions.create({
-      text: req.body.text,
-      image: req.body.image,
-      tags: req.body.tags,
-      course_id: req.body.course_id,
-      answers: req.body.answers
-    })
+    Questions.create(req.body)
     .then((result) => {
       res.send(result);
     })
@@ -125,5 +141,29 @@ router.get(
     res.send(Questions.get_random(req.params.amount));
   }
 )
+
+router.patch(
+  '/questions',
+  (req, res) => {
+    console.log(req.body)
+    const validation = validate(req.body, QuestionSchema.update.body);
+    if (!validation.valid) {
+      return res.status(400).send({
+        message: 'Invalid question information',
+        errors: validation.errors.map(e => e.stack)
+      });
+    }
+
+    Questions.update(req.body)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((reason) => {
+      res.status(500).send({
+        "message": reason
+      })
+    })
+  }
+);
 
 export default router;

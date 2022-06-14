@@ -487,6 +487,10 @@ Example:
 ]
 ```
 
+## Play with the API
+
+Before starting on this assignment make sure to play with the API a couple of times  so you get to know it. You can use a tool such as Insomnia or Postman for that.
+
 ## The Frontend
 
 The frontend (Vue app) provides a nice user interface that allows the management of the course and question resources.
@@ -534,11 +538,19 @@ and so on ...
 
 Generally you should pay special attention to:
 
-* Uniform layout and styling
+* Uniform layout and styling (use vuetify)
 * User Experience
 * Input validation
+* Make use of the good practices taught in the lessons
+  * DRY code
+  * SOLID principles
+  * Make use of the vuex store
+  * commit regularly
+  * ...
 
-Note that the frontend does not include any authorization of authentication. This is not a requirement of the project.
+Make sure to also create a nice home page for this project (feel free on how to fill it in).
+
+Note that the frontend does not include any authorization of authentication. This is not a requirement of the project. Neither is creating a PWA.
 
 ## Enable/Disable
 
@@ -553,6 +565,12 @@ Lastly allow the user to enable/disable questions via the frontend. It should be
 ## Docker
 
 Make sure that the frontend runs in a docker container and that the docker-compose file accompanying this repository is altered to automatically include the frontend application.
+
+## Example Questions
+
+Make sure to provide a file called `./backend/data/example.db.json` with at least 2 courses and 10 example questions. You can commit these to the repository.
+
+*Note that the actual database `db.json` is not committed into the git repo. This has been done on purpose. Please keep it like that*.
 
 ## Decent Readme
 

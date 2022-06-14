@@ -1,6 +1,6 @@
 # Mobile Apps - HerEx 2022 - Exam Builder
 
-Welcome to Exam Builder. This web application allows a teacher to manage multiple choice exam questions and even generate exams on the fly. The application consists of three mayor parts:
+Welcome to Exam Builder. This web application allows a teacher to manage multiple choice exam questions and even generate exams on the fly consisting of a random set of questions. The application consists of three mayor parts:
 
 * a database that stores the resources, in this case [lowdb](https://npm.io/package/lowdb) is used.
 * a backend express application that provides an API to consume
@@ -30,7 +30,7 @@ An example of a Course in JSON format:
 
 The following routes are available for the Course resource:
 
-<hr />
+---
 
 **GET /courses**
 
@@ -52,7 +52,7 @@ Example:
 ]
 ```
 
-<hr />
+---
 
 **GET /courses/:id**
 
@@ -68,7 +68,7 @@ Example:
 }
 ```
 
-<hr />
+---
 
 **POST /courses**
 
@@ -94,7 +94,7 @@ Example:
 }
 ```
 
-<hr />
+---
 
 **PATCH /courses**
 
@@ -122,7 +122,7 @@ Example:
 }
 ```
 
-<hr />
+---
 
 ### Questions
 
@@ -136,6 +136,7 @@ A Question is a resource that models the multiple choice questions that a teache
 * `answers`: an array of the options of the multiple choice question. It consists of the following properties:
   * `text`: the answer text of this option
   * `is_correct`: a boolean indicating if this answer is correct or not
+  * The number of items in `answers` is limited within the range of `[2,10]`
 
 An example of a Question in JSON format:
 
@@ -169,7 +170,7 @@ An example of a Question in JSON format:
 
 The following routes are available for the Question resource:
 
-<hr />
+---
 
 **GET /questions**
 
@@ -233,7 +234,7 @@ Example:
 ]
 ```
 
-<hr />
+---
 
 **GET /questions/:id**
 
@@ -275,7 +276,7 @@ Example:
 }
 ```
 
-<hr />
+---
 
 **POST /questions**
 
@@ -347,7 +348,7 @@ Example:
 }
 ```
 
-<hr />
+---
 
 **PATCH /questions**
 
@@ -406,7 +407,7 @@ Example:
 }
 ```
 
-<hr />
+---
 
 **DELETE /questions/:id**
 
@@ -421,7 +422,7 @@ Example:
 }
 ```
 
-<hr />
+---
 
 **GET /questions/random/:amount**
 
@@ -486,41 +487,72 @@ Example:
 ]
 ```
 
-
-<!-- 
-
-
-
 ## The Frontend
 
-The frontend (Vue app) provides a nice user interface that allows the management of the devices.
+The frontend (Vue app) provides a nice user interface that allows the management of the course and question resources.
 
-Existing devices should be listed with basic information. A user should be able to request the details of each device.
+In context of the courses, the user should be able to:
 
-A user should be allowed to create new devices with the following information (minimum but not limited to):
+* List the current existing courses
+* Create new courses
+* Update existing courses
 
-* name for the device
-* some sort of GUID (retrieved from scanned QR code)
-* a description
-* a picture / image of the device
-* a location (use GPS location service)
+In context of the questions, the user should be able to:
 
-Registering a device should be achieved by embedding a URL inside a QR code which also contains the GUID of the device. Scanning the URL should automatically bring you to the registration page with the GUID filled in. If the device is already registered it should provide the details page of the device.
+* List all current questions
+* Create new questions with all the required properties
+* Update existing questions
+* Delete questions
 
-Uploading an image to the backend can be achieved using a package such as `multer`.
+The user should be able to generate a listing of random questions to be used for example for an examination. Start by asking the user how many questions to generate. Then show an overview of the questions and allow the user to filter out questions by excluding them. Once finished generate markdown output in the following format (make sure the user can copy/paste it easily or download it as a markdown file):
 
-Provide the functionality for the user to be able to:
+```markdown
+1. This is the text of question 1.
 
-* register a new user account
-* login
-* logout
-* a profile page with an avatar, firstname, lastname and email
+![Image](https://i.pinimg.com/originals/86/ed/a1/86eda15f128f98d70ab2d3fffd206a2c.png)
 
-Make sure to provide a docker container for the Vue app.
+* [ ] This is option 1
+* [ ] This is option 2
+* [ ] This is option 3
+* [ ] This is option 4
 
-## Docker Compose
+---
 
-To allow all containers to be spun up easily, you should also provide a docker compose file. Place it in the root of this repository.
+2. This is the text of question 2.
+
+![Image](https://i.pinimg.com/originals/86/ed/a1/86eda15f128f98d70ab2d3fffd206a2c.png)
+
+* [ ] This is option 1
+* [ ] This is option 2
+* [ ] This is option 3
+* [ ] This is option 4
+
+---
+
+and so on ...
+```
+
+Generally you should pay special attention to:
+
+* Uniform layout and styling
+* User Experience
+* Input validation
+
+Note that the frontend does not include any authorization of authentication. This is not a requirement of the project.
+
+## Enable/Disable
+
+The backend currently does not support enabling/disable questions. This is a useful feature if you wish to keep old questions for inspiration but do not want them in the random listing.
+
+Allow a question to be set as enabled/disabled via the API. If the property is not provided @ creation, than you can assume a question to be enabled. Make sure that disabled questions are not included in the random question listing.
+
+Also make sure to alter the validation of the question resource to include the property.
+
+Lastly allow the user to enable/disable questions via the frontend. It should be none-intrusive. In other words, add for example a toggle button next to the question in the overview which quickly allows a question to be disabled/enabled.
+
+## Docker
+
+Make sure that the frontend runs in a docker container and that the docker-compose file accompanying this repository is altered to automatically include the frontend application.
 
 ## Decent Readme
 
@@ -532,26 +564,5 @@ Make sure the following topics are provided (minimally):
 * Author
 * Service diagram (use draw.io or similar)
 * How to setup
-* API description
+* API description (copy past from this README and extend with the extra properties)
 * Pitfalls / ToDo's / ...
-
-## Evaluation
-
-The following criteria will be taken into consideration when this assignment is evaluated.
-
-| Criteria | Score |
-| --- | :---: |
-| README | 0 - 4 |
-| RESTfull API | 0 - 4 |
-| Image Upload | 0 - 2 |
-| Authentication | 0 - 8 |
-| QR code | 0 - 2 |
-| Device GPS location | 0 - 2 |
-| User friendliness | 0 - 4 |
-| Creativity | 0 - 2 |
-| Device creation | 0 - 4 |
-| Device listing | 0 - 2 |
-| Device details | 0 - 2 |
-| Docker-compose | 0 - 2 |
-| Docker frontend | 0 - 1 |
-| Docker backend | 0 - 1 | -->

@@ -541,6 +541,7 @@ Generally you should pay special attention to:
 * Uniform layout and styling (use vuetify)
 * User Experience
 * Input validation
+* Catch error conditions as handle them appropriately
 * Make use of the good practices taught in the lessons
   * DRY code
   * SOLID principles
